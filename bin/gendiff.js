@@ -2,8 +2,6 @@
 
 import { Command } from 'commander';
 
-//const { Command } = require('commander');
-
 const program = new Command();
 
 program
@@ -14,4 +12,3 @@ program
     .argument('<filepath2>');
 
 program.parse();
-console.log('pipka');
