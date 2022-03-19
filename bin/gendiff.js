@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { jsonDiff } from './jsonDiff.js';
+import jsonDiff from './jsonDiff.js';
 
 const program = new Command();
 

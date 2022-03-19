@@ -45,6 +45,4 @@ const jsonDiff = (filepath1, filepath2) => {
   return result;
 };
 
-//jsonDiff('../__fixtures__/file1.json', '../__fixtures__/file2.json');
-
-export { jsonDiff };
+export default jsonDiff;
