@@ -23,3 +23,11 @@ test('yaml', () => {
 
   expect(jsonDiff('file1.yml', 'file2.yml')).toEqual(expected);
 });
+
+test('recursive json', () => {
+  const filepath6 = getFixturePath('file6.txt');
+
+  const expected = readFileSync(filepath6, 'utf8');
+
+  expect(jsonDiff('file4.json', 'file5.json')).toEqual(expected);
+})
