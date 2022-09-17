@@ -2,30 +2,7 @@ import _ from 'lodash';
 import getObject from './parsers.js';
 
 const diff = (entry1, entry2) => {
-  const iter = (acc, value1, value2, key) => {
-    const stringify = (value, replacer = ' ', spacesCount = 1) => {
-      const iter = (currentValue, depth) => {
-        if (!_.isObject(currentValue)) {
-          return `${currentValue}`;
-        }
-
-        const indentSize = depth * spacesCount;
-        const currentIndent = replacer.repeat(indentSize);
-        const bracketIndent = replacer.repeat(indentSize - spacesCount);
-        const lines = Object
-          .entries(currentValue)
-          .map(([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`);
-
-        return [
-          '{',
-          ...lines,
-          `${bracketIndent}}`,
-        ].join('\n');
-      };
-
-      return iter(value, 1);
-    };
-
+  const compare = (value1, value2, key) => {
     if (_.isObject(value1) && _.isObject(value2)) {
       const allKeys = _.sortBy(
         _.uniq(
@@ -36,40 +13,68 @@ const diff = (entry1, entry2) => {
       const difference = allKeys.reduce((acc, key) => {
         const newValue1 = value1[key];
         const newValue2 = value2[key];
-        acc = [...acc, iter([], newValue1, newValue2, key)];
+        acc = [...acc, compare(newValue1, newValue2, key)];
         return acc;
       }, []);
-      const displayKey = key === undefined ? '' : `${key}: `;
-      const result = `${displayKey}{\n${difference.flat().join('\n')}\n}`;
-      return result;
+      return {
+        key,
+        children: difference,
+      };
     }
+
+    const result = {};
 
     if (value1 === value2) {
-      acc.push(`    ${key}: ${stringify(value1)}`);
-      return acc;
+      result.key = key;
+      result.same = value1;
+      return result;
     }
     if (value1 !== undefined && value2 === undefined) {
-      acc.push(`  - ${key}: ${stringify(value1)}`);
-      return acc;
+      result.key = key;
+      result.deleted = value1;
+      if (_.isObject(value1)) {
+        const keys = Object.keys(value1);
+        const noDiff = keys.reduce((acc, key) => {
+          return [...acc, compare(value1[key], value1[key], key)];
+        }, []);
+        result.children = noDiff;
+      }
+      return result;
     }
     if (value1 === undefined && value2 !== undefined) {
-      acc.push(`  + ${key}: ${stringify(value2)}`);
-      return acc;
+      result.key = key;
+      result.added = value2;
+      if (_.isObject(value2)) {
+        const keys = Object.keys(value2);
+        const noDiff = keys.reduce((acc, key) => {
+          return [...acc, compare(value2[key], value2[key], key)];
+        }, []);
+        result.children = noDiff;
+      }
+      return result;
     }
     if (value1 !== value2) {
-      acc.push(`  - ${key}: ${stringify(value1)}`);
-      acc.push(`  + ${key}: ${stringify(value2)}`);
-      return acc;
+      result.key = key;
+      result.deleted = value1;
+      if (_.isObject(value1)) {
+        const keys = Object.keys(value1);
+        const noDiff = keys.reduce((acc, key) => {
+          return [...acc, compare(value1[key], value1[key], key)];
+        }, []);
+        result.deletedChildren = noDiff;
+      }
+      result.added = value2;
+      if (_.isObject(value2)) {
+        const keys = Object.keys(value2);
+        const noDiff = keys.reduce((acc, key) => {
+          return [...acc, compare(value2[key], value2[key], key)];
+        }, []);
+        result.addedChildren = noDiff;
+      }
+      return result;
     }
   };
-  console.log(iter([], entry1, entry2));
-  return iter([], entry1, entry2);
+  return compare(entry1, entry2);
 };
 
-const jsonDiff = (filepath1, filepath2) => {
-  const fileObject1 = getObject(filepath1);
-  const fileObject2 = getObject(filepath2);
-  return diff(fileObject1, fileObject2);
-};
-
-export default jsonDiff;
+export default diff;

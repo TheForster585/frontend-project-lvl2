@@ -2,7 +2,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { readFileSync } from 'fs';
-import jsonDiff from '../bin/diff.js';
+import stylish from '../bin/formatters/stylish.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,7 +13,7 @@ test('json', () => {
 
   const expected = readFileSync(filepath3, 'utf8');
 
-  expect(jsonDiff('file1.json', 'file2.json')).toEqual(expected);
+  expect(stylish('file1.json', 'file2.json')).toEqual(expected);
 });
 
 test('yaml', () => {
@@ -21,7 +21,7 @@ test('yaml', () => {
 
   const expected = readFileSync(filepath3, 'utf8');
 
-  expect(jsonDiff('file1.yml', 'file2.yml')).toEqual(expected);
+  expect(stylish('file1.yml', 'file2.yml')).toEqual(expected);
 });
 
 test('recursive json', () => {
@@ -29,5 +29,13 @@ test('recursive json', () => {
 
   const expected = readFileSync(filepath6, 'utf8');
 
-  expect(jsonDiff('file4.json', 'file5.json')).toEqual(expected);
-})
+  expect(stylish('file4.json', 'file5.json')).toEqual(expected);
+});
+
+test('recursive yaml', () => {
+  const filepath6 = getFixturePath('file6.txt');
+
+  const expected = readFileSync(filepath6, 'utf8');
+
+  expect(stylish('file4.yml', 'file5.yml')).toEqual(expected);
+});
