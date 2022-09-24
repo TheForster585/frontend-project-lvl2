@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import format from './formatters/index.js';
+import format from '../src/formatters/index.js';
 
 const program = new Command();
 
