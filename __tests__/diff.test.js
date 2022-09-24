@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { readFileSync } from 'fs';
 import stylish from '../bin/formatters/stylish.js';
+import plain from '../bin/formatters/plain.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,9 +18,9 @@ test('json', () => {
 });
 
 test('yaml', () => {
-  const filepath3 = getFixturePath('file3.txt');
+    const filepath3 = getFixturePath('file3.txt');
 
-  const expected = readFileSync(filepath3, 'utf8');
+    const expected = readFileSync(filepath3, 'utf8');
 
   expect(stylish('file1.yml', 'file2.yml')).toEqual(expected);
 });
@@ -38,4 +39,12 @@ test('recursive yaml', () => {
   const expected = readFileSync(filepath6, 'utf8');
 
   expect(stylish('file4.yml', 'file5.yml')).toEqual(expected);
+});
+
+test('plain', () => {
+  const filepath7 = getFixturePath('file7.txt');
+
+  const expected = readFileSync(filepath7, 'utf8');
+
+  expect(plain('file4.json', 'file5.json')).toEqual(expected);
 });
