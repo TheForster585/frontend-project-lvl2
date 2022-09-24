@@ -6,9 +6,14 @@ import stylish from '../src/formatters/stylish.js';
 import plain from '../src/formatters/plain.js';
 import json from '../src/formatters/json.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+//const getExpected = (file) => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+ // const filepath = getFixturePath(file);
+ // return readFileSync(filepath, 'utf8');
+//};
+
 
 test('json', () => {
   const filepath3 = getFixturePath('stylish.txt');
