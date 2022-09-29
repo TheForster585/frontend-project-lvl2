@@ -15,7 +15,7 @@ test('json', () => {
 
   const expected = readFileSync(filepath3, 'utf8');
 
-  expect(stylish('file1.json', 'file2.json')).toEqual(expected);
+  expect(stylish('../__fixtures__/file1.json', '../__fixtures__/file2.json')).toEqual(expected);
 });
 
 test('yaml', () => {
@@ -23,7 +23,7 @@ test('yaml', () => {
 
   const expected = readFileSync(filepath3, 'utf8');
 
-  expect(stylish('file1.yml', 'file2.yml')).toEqual(expected);
+  expect(stylish('../__fixtures__/file1.yml', '../__fixtures__/file2.yml')).toEqual(expected);
 });
 
 test('recursive json', () => {
@@ -31,7 +31,7 @@ test('recursive json', () => {
 
   const expected = readFileSync(filepath6, 'utf8');
 
-  expect(stylish('file4.json', 'file5.json')).toEqual(expected);
+  expect(stylish('../__fixtures__/file4.json', '../__fixtures__/file5.json')).toEqual(expected);
 });
 
 test('recursive yaml', () => {
@@ -39,7 +39,7 @@ test('recursive yaml', () => {
 
   const expected = readFileSync(filepath6, 'utf8');
 
-  expect(stylish('file4.yml', 'file5.yml')).toEqual(expected);
+  expect(stylish('../__fixtures__/file4.yml', '../__fixtures__/file5.yml')).toEqual(expected);
 });
 
 test('plain', () => {
@@ -47,7 +47,7 @@ test('plain', () => {
 
   const expected = readFileSync(filepath7, 'utf8');
 
-  expect(plain('file4.json', 'file5.json')).toEqual(expected);
+  expect(plain('../__fixtures__/file4.json', '../__fixtures__/file5.json')).toEqual(expected);
 });
 
 test('json', () => {
@@ -55,5 +55,5 @@ test('json', () => {
 
   const expected = readFileSync(filepath8, 'utf8');
 
-  expect(json('file4.json', 'file5.json')).toEqual(expected);
+  expect(json('../__fixtures__/file4.json', '../__fixtures__/file5.json')).toEqual(expected);
 });
