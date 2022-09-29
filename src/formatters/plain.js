@@ -18,17 +18,18 @@ const plain = (filepath1, filepath2) => {
         if (oldPath === '') return `${value.key}`;
         return `${oldPath}.${value.key}`;
       };
-      if ((_.has(currentValue, 'children')) && (!_.has(currentValue, 'added')) && (!_.has(currentValue, 'deleted'))) {  
+      console.log(currentValue);
+      if ((_.has(currentValue, 'children')) && (currentValue.status !== 'added') && (currentValue.status !== 'deleted') && (currentValue.status !== 'changed')) {  
         const {children} = currentValue;
         return children.flatMap((child) => iter(child, newPath(currentPath, currentValue))).filter((item) => item !== 'filter').join('\n');
       }
-      if ((_.has(currentValue, 'added')) && (_.has(currentValue, 'deleted'))) {
-        return `Property '${newPath(currentPath, currentValue)}' was updated. From ${displayValue(currentValue.deleted)} to ${displayValue(currentValue.added)}`;
+      if (currentValue.status === 'changed') {
+        return `Property '${newPath(currentPath, currentValue)}' was updated. From ${displayValue(currentValue.deletedValue)} to ${displayValue(currentValue.addedValue)}`;
       }
-      if (_.has(currentValue, 'added')) {
-        return `Property '${newPath(currentPath, currentValue)}' was added with value: ${displayValue(currentValue.added)}`;
+      if (currentValue.status === 'added') {
+        return `Property '${newPath(currentPath, currentValue)}' was added with value: ${displayValue(currentValue.value)}`;
       }
-      if (_.has(currentValue, 'deleted')) {
+      if (currentValue.status === 'deleted') {
         return `Property '${newPath(currentPath, currentValue)}' was removed`;
       }
       return 'filter';

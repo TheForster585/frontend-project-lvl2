@@ -15,43 +15,44 @@ const stylish = (filepath1, filepath2) => {
         acc.push(iter(child, newDepth));
         return acc;
       }, []);
-
-      if ((_.has(currentValue, 'added')) || (_.has(currentValue, 'deleted')) || (_.has(currentValue, 'same'))) {
+      if (currentValue.status === 'added' || currentValue.status === 'deleted' || currentValue.status === 'same' || currentValue.status === 'changed') {
         const currentIndent = replacer.repeat(indentSize - 2);
 
-        if (_.has(currentValue, 'same')) {
-          return `${currentIndent}  ${currentValue.key}: ${currentValue.same}`;
+        if (currentValue.status === 'same') {
+          return `${currentIndent}  ${currentValue.key}: ${currentValue.value}`;
         }
 
-        if ((_.has(currentValue, 'deleted')) && (_.has(currentValue, 'added'))) {
-          if (_.has(currentValue, 'deletedChildren')) {
-            const children = getChildren('deletedChildren');
-            return `${currentIndent}- ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }\n${currentIndent}+ ${currentValue.key}: ${currentValue.added}`;
+        if (currentValue.status === 'changed') {
+          if (_.has(currentValue, 'children')) {
+            if (_.isObject(currentValue, 'deletedValue')) {
+              const children = getChildren('children');
+              return `${currentIndent}- ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }\n${currentIndent}+ ${currentValue.key}: ${currentValue.addedValue}`;
+            }
+            if (_.isObject(currentValue, 'addedValue')) {
+              const children = getChildren('children');
+              return `${currentIndent}- ${currentValue.key}: ${currentValue.deletedValue}\n${currentIndent}- ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }`;
+            }
           }
-          if (_.has(currentValue, 'addedChildren')) {
-            const children = getChildren('addedChildren');
-            return `${currentIndent}- ${currentValue.key}: ${currentValue.deleted}\n${currentIndent}- ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }`;
-          }
-          return `${currentIndent}- ${currentValue.key}: ${currentValue.deleted}\n${currentIndent}+ ${currentValue.key}: ${currentValue.added}`;
+          return `${currentIndent}- ${currentValue.key}: ${currentValue.deletedValue}\n${currentIndent}+ ${currentValue.key}: ${currentValue.addedValue}`;
         }
 
-        if (_.has(currentValue, 'deleted')) {
+        if (currentValue.status === 'deleted') {
           if (_.has(currentValue, 'children')) {
             const children = getChildren('children');
             return `${currentIndent}- ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }`;
           }
-          return `${currentIndent}- ${currentValue.key}: ${currentValue.deleted}`;
+          return `${currentIndent}- ${currentValue.key}: ${currentValue.value}`;
         }
 
-        if (_.has(currentValue, 'added')) {
+        if (currentValue.status === 'added') {
           if (_.has(currentValue, 'children')) {
             const children = getChildren('children');
             return `${currentIndent}+ ${currentValue.key}: {\n${children.join('\n')}\n${currentIndent}  }`;
           }
-          return `${currentIndent}+ ${currentValue.key}: ${currentValue.added}`;
+          return `${currentIndent}+ ${currentValue.key}: ${currentValue.value}`;
         }
 
-        return `\n${currentIndent}${iter(currentValue.added, 2)}`;
+        return `\n${currentIndent}${iter(currentValue.addedValue, 2)}`;
       }
       const children = getChildren('children');
       const currentIndent = replacer.repeat(indentSize);

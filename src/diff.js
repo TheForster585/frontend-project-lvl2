@@ -29,35 +29,39 @@ const diff = (entry1, entry2) => {
 
     if (value1 === value2) {
       result.key = key;
-      result.same = value1;
+      result.value = value1;
+      result.status = 'same';
       return result;
     }
     if (value1 !== undefined && value2 === undefined) {
       result.key = key;
-      result.deleted = value1;
+      result.value = value1;
       if (_.isObject(value1)) {
         result.children = noDiff(value1);
       }
+      result.status = 'deleted';
       return result;
     }
     if (value1 === undefined && value2 !== undefined) {
       result.key = key;
-      result.added = value2;
+      result.value = value2;
       if (_.isObject(value2)) {
         result.children = noDiff(value2);
       }
+      result.status = 'added';
       return result;
     }
     if (value1 !== value2) {
       result.key = key;
-      result.deleted = value1;
+      result.deletedValue = value1;
       if (_.isObject(value1)) {
-        result.deletedChildren = noDiff(value1);
+        result.children = noDiff(value1);
       }
-      result.added = value2;
+      result.addedValue = value2;
       if (_.isObject(value2)) {
-        result.addedChildren = noDiff(value2);
+        result.children = noDiff(value2);
       }
+      result.status = 'changed';
       return result;
     }
     return result;
